@@ -1,16 +1,9 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import connectDatabase from './config/db.config.js';
 import Post from './model/post.js';
 
 const app = express();
 app.use(express.json());
-
-const requestListener = (req, res) => {
-    res.sendFile(path.join(path.dirname(fileURLToPath(import.meta.url)), 'index.html'));
-}
-
 
 // Connect database
 connectDatabase();
