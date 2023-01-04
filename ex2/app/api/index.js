@@ -1,14 +1,16 @@
 import express from 'express';
-import connectDatabase from './config/db.config.js';
+import client from './config/db.config.js'
 
 const app = express();
 app.use(express.json());
 
 // Connect database
-// connectDatabase();
+await client.connect();
+const usersRes = await client.query('SELECT * FROM users');
 
 app.get('/', (req, res) => {
-    res.send('Hello World from ex2 api');
+    const users = usersRes.rows;
+    res.send(users);
 })
 
 const PORT = process.env.PORT || 5000;

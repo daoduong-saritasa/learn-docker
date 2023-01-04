@@ -1,17 +1,13 @@
-import mongoose from 'mongoose'
-const connectDatabase = () => {
-  console.log(`Connecting to ${process.env.MONGO_URI}`)
-  mongoose
-    .connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-    .then(() => {
-      console.log('Successfully connected to the database')
-    })
-    .catch((err) => {
-      console.log(`Could not connect to the database. Exiting now...\n${err}`)
-      process.exit()
-    })
-}
-export default connectDatabase
+import pg from 'pg'
+const { Client } = pg
+
+// Connect to database
+const client = new Client({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+});
+
+export default client;
