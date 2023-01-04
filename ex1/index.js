@@ -6,9 +6,9 @@ const app = express();
 app.use(express.json());
 
 // Connect database
-connectDatabase();
+// connectDatabase();
 
-app.post('/', (req, res) => {
+app.post('/posts', (req, res) => {
     const post = new Post(req.body)
     post.save()
         .then(() => {
@@ -19,10 +19,14 @@ app.post('/', (req, res) => {
         })
 })
 
-app.get('/', async (req, res) => {
+app.get('/posts', async (req, res) => {
     const post = await Post.find();
     res.send(post);
 });
+
+app.get('/', (req, res) => {
+    res.send('Hello World');
+})
 
 const PORT = process.env.PORT || 3000;
 
