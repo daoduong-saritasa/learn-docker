@@ -19,7 +19,7 @@
     "coverage": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "lint": "ng lint --cache && stylelint projects/**/*.*css",
     "lint:fix": "ng lint --cache --fix && stylelint projects/**/*.*css --fix && prettier --write projects/**/*.html",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install",
     "start:server": "node ./projects/api/server.js",
     "dev:server": "nodemon ./projects/api/server.js"
   },
