@@ -4,4 +4,4 @@ COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production --silent
 COPY . .
 EXPOSE 5000
-CMD ["npm", "server", "start"]
+CMD ["npm", "start:server"]
