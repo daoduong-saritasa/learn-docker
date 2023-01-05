@@ -15,6 +15,7 @@ export class AppUrlsConfig {
   /** Auth-related routes. */
   public readonly auth = {
     login: this.toApi('auth/login/'),
+    register: this.toApi('auth/register/'),
     refreshSecret: this.toApi('auth/password-reset/'),
     resetPassword: this.toApi('auth/token/refresh/'),
     confirmPasswordReset: this.toApi('auth/password-reset-confirm/'),
@@ -43,6 +44,7 @@ export class AppUrlsConfig {
   }
 
   private toApi(...args: readonly string[]): string {
+    console.log(args, this.appConfigService.apiUrl)
     const path = args.join('/');
     return new URL(path, this.appConfigService.apiUrl).toString();
   }

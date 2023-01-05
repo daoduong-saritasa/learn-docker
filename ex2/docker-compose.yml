@@ -34,7 +34,9 @@ services:
   frontend:
     image: frontend
     container_name: frontend
-    build: ./ui
+    build: 
+      context: ./ui
+      dockerfile: Dockerfile
     ports:
       - 8080:80
     volumes:
