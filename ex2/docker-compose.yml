@@ -27,6 +27,7 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=1
       - DB_NAME=user
+      - TOKEN_SECRET=secret-token
     links:
       - postgresdb
     volumes:

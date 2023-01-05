@@ -1,5 +1,7 @@
-import pg from 'pg'
-const { Client } = pg
+import pg from 'pg';
+import dotenv from 'dotenv';
+const { Client } = pg;
+dotenv.config();
 
 // Connect to database
 const client = new Client({
