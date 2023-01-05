@@ -5,13 +5,12 @@ const app = express();
 app.use(express.json());
 
 // Connect database
-// await client.connect();
-// const usersRes = await client.query('SELECT * FROM users');
+await client.connect();
+const usersRes = await client.query('SELECT * FROM users');
 
 app.get('/', (req, res) => {
-    // const users = usersRes.rows;
-    // res.send(users);
-    res.send('Hello World')
+    const users = usersRes.rows;
+    res.send(users);
 })
 
 const PORT = process.env.PORT || 5000;
