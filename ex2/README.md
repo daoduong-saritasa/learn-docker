@@ -7,7 +7,8 @@
 ```bash
 docker-compose up -d
 ```
-### Application available at [localhost:8080](localhost:8080)
+### Application will be available <a href="http://localhost:8080" target="_blank">here</a>
+
 
 
 ### Stop services
