@@ -10,29 +10,31 @@ app.use(express.json()).use(cors());
 // Connect database
 await client.connect();
 
-app.get('/', (req, res) => {
+app.get('/', async(req, res) => {
+    const usersRes = await client.query("SELECT * FROM users");
     const users = usersRes.rows;
     res.json(users);
 })
 
 app.post("/auth/login", async(req, res) => {
-    const { username, password } = req.body;
-    const user = await client.query("SELECT * FROM users WHERE username = $1", [username]);
+    const { email, password } = req.body;
+    const user = await client.query("SELECT * FROM users WHERE email = $1", [email]);
     if (user.rows.length === 0) {
-        return res.status(401).send("Username or password incorrect");
+        return res.status(401).send("Email or password incorrect");
     }
     if (password === user.rows[0].password) {
         // Generate token
         const token = jwt.sign({ id: user.rows[0].id }, process.env.TOKEN_SECRET, { expiresIn: "10d" });
-        res.send(token);
+        const response = { token: token }
+        res.status(200).send(response);
     }
     else {
-        res.status(401).send("Username or password incorrect");
+        res.status(401).send("Email or password incorrect");
     }
     
 })
 
-app.get('/user/profile', async (req, res) => {
+app.get('/users/profile', async (req, res) => {
     const token = req.header("Authorization").split(" ")[1];
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
     if (decoded) {

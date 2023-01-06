@@ -44,7 +44,6 @@ export class AppUrlsConfig {
   }
 
   private toApi(...args: readonly string[]): string {
-    console.log(args, this.appConfigService.apiUrl)
     const path = args.join('/');
     return new URL(path, this.appConfigService.apiUrl).toString();
   }

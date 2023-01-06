@@ -26,7 +26,7 @@ services:
       - DB_PORT=5432
       - DB_USER=admin
       - DB_PASSWORD=1
-      - DB_NAME=user
+      - DB_NAME=postgres
       - TOKEN_SECRET=secret-token
     links:
       - postgresdb
