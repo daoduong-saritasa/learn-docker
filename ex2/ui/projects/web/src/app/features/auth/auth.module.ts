@@ -4,14 +4,16 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { CommonSharedModule } from '@saanbo/common/shared/common-shared.module';
+import { AuthorizedGuard } from '@saanbo/common/core/guards/authorized.guard';
 
 import { ConfirmResetPasswordComponent } from './confirm-reset-password/confirm-reset-password.component';
 import { LoginComponent } from './login/login.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
+
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', canActivate: [AuthorizedGuard] , component: LoginComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'confirm-password', component: ConfirmResetPasswordComponent },
 ];

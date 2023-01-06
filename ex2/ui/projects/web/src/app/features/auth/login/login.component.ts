@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Login } from '@saanbo/common/core/models/login';
 import { UserService } from '@saanbo/common/core/services/user.service';
 import { catchValidationData } from '@saanbo/common/core/utils/rxjs/catch-validation-error';
 import { toggleExecutionState } from '@saanbo/common/core/utils/rxjs/toggle-execution-state';
 import { FlatControlsOf } from '@saanbo/common/core/utils/types/controls-of';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 
 type LoginFormData = FlatControlsOf<Login>;
 
@@ -28,6 +29,7 @@ export class LoginComponent {
   public constructor(
     private readonly fb: NonNullableFormBuilder,
     private readonly userService: UserService,
+    public readonly router: Router,
   ) {
     this.loginForm = this.initLoginForm();
   }
@@ -43,6 +45,7 @@ export class LoginComponent {
     const loginData = this.loginForm.getRawValue();
     this.userService.login(loginData).pipe(
       toggleExecutionState(this.isLoading$),
+      tap(() => this.router.navigate(['/'])),
       catchValidationData(this.loginForm),
       untilDestroyed(this),
     )
