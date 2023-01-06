@@ -7,7 +7,7 @@
 ```bash
 docker-compose up -d
 ```
-### Application available at localhost:8080
+### Application available at [localhost:8080](localhost:8080)
 
 
 ### Stop services
