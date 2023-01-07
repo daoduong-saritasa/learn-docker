@@ -28,20 +28,12 @@ services:
       - DB_PASSWORD=1
       - DB_NAME=postgres
       - TOKEN_SECRET=secret-token
-    links:
-      - postgresdb
-    volumes:
-      - ./api:/app
   frontend:
     image: frontend
     container_name: frontend
-    build: 
-      context: ./ui
-      dockerfile: Dockerfile
+    build: ./ui
     ports:
       - 8080:80
-    volumes:
-      - ./ui:/app
 volumes:
   postgresdb:
     driver: local
