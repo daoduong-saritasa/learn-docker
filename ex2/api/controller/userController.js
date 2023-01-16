@@ -1,7 +1,10 @@
 import client from "../config/db.config.js";
+import jwt from "jsonwebtoken";
 
 const getProfile = async (req, res) => {
-  const token = req.header("Authorization").split(" ")[1];
+  const { headers } = req;
+  const { authorization } = headers;
+  const token = authorization.split(" ")[1];
   const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
   if (decoded) {
     const userId = decoded.id;
