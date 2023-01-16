@@ -10,7 +10,6 @@ await client.connect();
 async function handleRequest(req, res, body) {
   switch (req.url) {
     case "/":
-      res.writeHead(200);
       res.end(JSON.stringify({ message: "Hello World" }));
       break;
     case routes.auth.login:
@@ -36,8 +35,6 @@ const requestListener = async (req, res) => {
     })
     .on("end", async () => {
       body = Buffer.concat(body).toString();
-      // At this point, we have the headers, method, url and body, and can now
-      // do whatever we need to in order to respond to this request.
       await handleRequest(req, res, body);
     });
 };
