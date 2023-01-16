@@ -3,7 +3,7 @@ const routes = {
         login: '/auth/login',
     },
     user: {
-        profile: '/users/profile'
+        profile: '/user/profile'
     }
 }
 
