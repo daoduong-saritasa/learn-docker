@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 
 const login = async (req, res, body) => {
   const { email, password } = JSON.parse(body);
-  console.log(email, password)
   const user = await client.query("SELECT * FROM users WHERE email = $1", [
     email,
   ]);
@@ -18,7 +17,7 @@ const login = async (req, res, body) => {
     });
     const response = { token: token };
     res.writeHead(200);
-    res.end(response);
+    res.end(JSON.stringify(response));
   } else {
     res.writeHead(401);
     res.end(JSON.stringify({ error: "Email or password incorrect" }));
