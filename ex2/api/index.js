@@ -19,6 +19,7 @@ async function handleRequest(req, res, body) {
       await userController.getProfile(req, res, body);
       break;
     default:
+      res.writeHead(404);
       res.end(JSON.stringify({ error: "Resource not found" }));
       break;
   }
@@ -47,7 +48,11 @@ const server = http.createServer(async (req, res) => {
     "OPTIONS, GET, POST, PUT, DELETE"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.writeHead(200);
+  if (req.method === "OPTIONS") {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
   await requestListener(req, res);
 });
 
