@@ -27,7 +27,9 @@ async function handleRequest (req, res, body) {
 }
 
 const requestListener = async(req, res) => {
-  const { headers, method, url } = req;
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   let body = [];
   req.on('error', (err) => {
     console.error(err);
@@ -39,9 +41,7 @@ const requestListener = async(req, res) => {
     // do whatever we need to in order to respond to this request.
     await handleRequest(req, res, body);
   });
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
 };
 
 const server = http.createServer(requestListener);
