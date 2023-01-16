@@ -5,6 +5,11 @@ const getProfile = async (req, res) => {
   const { headers } = req;
   const { authorization } = headers;
   const token = authorization.split(" ")[1];
+  if (token === "undefined") {
+    res.writeHead(401);
+    res.end(JSON.stringify({ error: "Unauthorized" }));
+    return;
+  }
   const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
   if (decoded) {
     const userId = decoded.id;
