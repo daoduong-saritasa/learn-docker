@@ -1,7 +1,7 @@
 import * as http from "http";
 import client from "./config/db.config.js";
 import routes from "./routes.js";
-import { authController, userController } from "./controller/index.js";
+import { authController, userController } from "./controllers/index.js";
 
 const PORT = process.env.PORT || 5000;
 
