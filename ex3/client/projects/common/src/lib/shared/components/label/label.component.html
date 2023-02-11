@@ -1,0 +1,8 @@
+<label class="label">
+  <span class="label__content" data-testid="label" *ngIf="labelText !== null">
+    {{ labelText }}
+  </span>
+  <saanboc-form-error-wrapper>
+    <ng-content />
+  </saanboc-form-error-wrapper>
+</label>
