@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:14.1-alpine
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: postgres
+    ports:
+      - 5433:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  client:
+    image: client
+    container_name: client
+    build: ./client
+    ports:
+      - 8080:80
+volumes:
+  postgres-db:
+    driver: local
