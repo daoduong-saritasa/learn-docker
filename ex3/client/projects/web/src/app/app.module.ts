@@ -5,6 +5,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from '@saanbo/common/core/interceptors/auth.interceptor';
 import { RefreshTokenInterceptor } from '@saanbo/common/core/interceptors/refresh-token.interceptor';
 import { AppConfig } from '@saanbo/common/core/services/app.config';
+import { ApolloModule, APOLLO_OPTIONS,  } from 'apollo-angular';
+import {HttpLink} from 'apollo-angular/http';
+import { InMemoryCache } from '@apollo/client/core'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,10 +31,27 @@ const httpInterceptorProviders = [
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
+    ApolloModule,
   ],
   providers: [
     ...httpInterceptorProviders,
     { provide: AppConfig, useClass: WebAppConfig },
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory: (httpLink: HttpLink) => {
+        return {
+          link: httpLink.create({
+            uri: process.env.NG_APP_API_URL, // <-- Ask for using app config
+              // If needed, you can set custom headers here
+              // headers: new HttpHeaders({
+              //   Authorization: `Bearer TOKEN`
+              // })
+          }),
+          cache: new InMemoryCache()
+        };
+      },
+      deps: [HttpLink]
+    }
   ],
   bootstrap: [AppComponent],
 })
