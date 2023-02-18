@@ -1,18 +1,15 @@
 version: "3.8"
 services:
   postgres-db:
-    image: postgres:14.1-alpine
-    container_name: postgres-db
-    restart: always
+    image: postgres:bullseye
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1
-      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: vocabulary
     ports:
       - 5432:5432
     volumes:
-      - ./db/data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./db/init-migration.sql:/docker-entrypoint-initdb.d/init-migration.sql
+      - vocabulary-db-data:/var/lib/postgresql/data
   api:
     image: graphile/postgraphile
     ports:
@@ -38,5 +35,4 @@ services:
     ports:
       - 8080:80
 volumes:
-  postgres-db:
-    driver: local
+  vocabulary-db-data:
