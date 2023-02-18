@@ -19,7 +19,7 @@
     "coverage": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "lint": "ng lint --cache && stylelint projects/**/*.*css",
     "lint:fix": "ng lint --cache --fix && stylelint projects/**/*.*css --fix && prettier --write projects/**/*.html",
-    "prepare": "cd ../.. && husky install ex2/ui/.husky"
+    "prepare": "cd ../.. && husky install ex3/client/.husky"
   },
   "private": true,
   "dependencies": {

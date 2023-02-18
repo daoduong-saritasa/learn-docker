@@ -28,11 +28,11 @@ services:
       --watch
     depends_on:
       - postgres-db
-  client:
-    image: client
-    container_name: client
-    build: ./client
-    ports:
-      - 8080:80
+  # client:
+  #   image: client
+  #   container_name: client
+  #   build: ./client
+  #   ports:
+  #     - 8080:8080
 volumes:
   vocabulary-db-data:
