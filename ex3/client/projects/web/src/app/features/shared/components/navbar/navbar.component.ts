@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 /** Navbar component. */
 @Component(
@@ -10,4 +11,17 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   },
 )
 
-export class NavbarComponent {}
+export class NavbarComponent {
+
+  /** User. */
+  public readonly user$: Observable<any>;
+
+  /** Constructor. */
+  public constructor() {
+    this.user$ = of(
+      {
+        name: 'John Doe',
+      },
+    );
+  }
+}

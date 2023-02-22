@@ -9,7 +9,7 @@ import { Apollo, gql } from 'apollo-angular';
 
 const getGroups = gql`
 query MyQuery {
-  allTasks {
+  allGroups {
     nodes {
       name
     }
@@ -33,7 +33,7 @@ export class DashboardComponent {
   /** Current user. */
   public readonly user$: Observable<User | null>;
 
-  // Groups
+  /** Groups. */
   public readonly groups$: Observable<any>;
 
   public constructor(
@@ -49,7 +49,7 @@ export class DashboardComponent {
       query: getGroups,
     }).valueChanges.pipe(
       tap((result: any) => console.log(result)),
-      map((result: any) => result.data && result.data.allTasks.nodes)
+      map((result: any) => result.data && result.data.allGroups.nodes)
     )
   }
 

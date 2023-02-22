@@ -1,5 +1,4 @@
 <nav class="navbar">
-  <a routerLink="/home" routerLinkActive="active">Home</a>
-  <a routerLink="/about" routerLinkActive="active">About</a>
-  <a routerLink="/contact" routerLinkActive="active">Contact</a>
+  <h1>Welcome <span *ngIf="(user$|async) as user">{{ user.name }}</span></h1>
+  <button>Logout</button>
 </nav>

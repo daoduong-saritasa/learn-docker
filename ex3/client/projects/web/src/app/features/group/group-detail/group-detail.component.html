@@ -1,0 +1,12 @@
+<div *ngIf="group$ |async as group" class="group">
+  <h1>{{ group.name }}</h1>
+  <div *ngFor="let task of (tasks$ | async); trackBy: trackByTask" class="task">
+    <h2>{{ task.name }}</h2>
+    <h4>{{ task.description }}</h4>
+    <div *ngIf="task.sentAt; else notSent">
+      Sent
+    </div>
+    <ng-template #notSent>Not sent</ng-template>
+  </div>
+  <a routerLink="/group">Back</a>
+</div>

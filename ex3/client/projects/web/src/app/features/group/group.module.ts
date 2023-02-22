@@ -6,10 +6,12 @@ import { WebSharedModule } from '../shared/web-shared.module';
 
 import { GroupRoutingModule } from './group-routing.module';
 import { GroupComponent } from './group.component';
+import { GroupDetailComponent } from './group-detail/group-detail.component';
+import { GroupListComponent } from './group-list/group-list.component';
 
 /** Group module. */
 @NgModule({
-  declarations: [GroupComponent],
+  declarations: [GroupComponent, GroupDetailComponent, GroupListComponent],
   imports: [
     CommonModule,
     GroupRoutingModule,

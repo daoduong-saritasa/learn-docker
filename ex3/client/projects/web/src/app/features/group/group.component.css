@@ -1,0 +1,15 @@
+.group-container {
+  display: flex;
+  height: 100%;
+}
+
+.group-list {
+  width: 300px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+.group-detail {
+  background-color: lightblue;
+  flex: 1;
+}
