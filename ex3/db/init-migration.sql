@@ -153,6 +153,7 @@ CREATE TABLE public."group" (
 -- Insert group
 INSERT INTO public."group" (name) VALUES ('Group 1');
 INSERT INTO public."group" (name) VALUES ('Group 2');
+INSERT INTO public."group" (name) VALUES ('Group 3');
 
 -- Create table user group
 CREATE TABLE public."user_group" (
@@ -175,6 +176,9 @@ INSERT INTO public."user_group" (user_id, group_id) VALUES (1, 2);
 INSERT INTO public."user_group" (user_id, group_id) VALUES (2, 2);
 INSERT INTO public."user_group" (user_id, group_id) VALUES (4, 2);
 INSERT INTO public."user_group" (user_id, group_id) VALUES (6, 2);
+
+INSERT INTO public."user_group" (user_id, group_id) VALUES (4, 3);
+INSERT INTO public."user_group" (user_id, group_id) VALUES (6, 3);
 
 -- Create table word translation task
 CREATE TABLE public."word_translation" (
@@ -205,6 +209,14 @@ CREATE TABLE public."task" (
 INSERT INTO public."task" (name, description) VALUES ('Task 1', 'Task 1 description');
 INSERT INTO public."task" (name, description) VALUES ('Task 2', 'Task 2 description');
 INSERT INTO public."task" (name, description) VALUES ('Task 3', 'Task 3 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 4', 'Task 4 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 5', 'Task 5 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 6', 'Task 6 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 7', 'Task 7 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 8', 'Task 8 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 9', 'Task 9 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 10', 'Task 10 description');
+
 
 -- Create table task word translation
 CREATE TABLE public."task_word_translation" (
@@ -226,6 +238,17 @@ INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (2, 6);
 INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (2, 7);
 INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (3, 2);
 INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (3, 6);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (3, 7);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (4, 1);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (4, 3);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (4, 5);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (5, 1);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (5, 2);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (6, 3);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (7, 4);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (8, 5);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (9, 6);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (10, 7);
 
 
 
@@ -241,8 +264,10 @@ CREATE TABLE public."task_group" (
 );
 
 INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (1, 1, '2020-01-01 00:00:00');
-INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (2, 1, NULL);
+INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (2, 1, '2020-01-01 00:00:00');
 INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (3, 2, '2020-01-01 00:00:00');
+INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (4, 2, '2020-01-01 00:00:00');
+INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (5, 3, '2020-01-01 00:00:00');
 
 -- Create update task status in group table function
 CREATE FUNCTION public.update_task_status_in_group(
