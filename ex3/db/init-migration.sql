@@ -234,7 +234,7 @@ CREATE TABLE public."task_group" (
     id SERIAL,
     task_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
-    sent_at TIMESTAMP,
+    sent_at TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (task_id) REFERENCES public."task"(id),
     FOREIGN KEY (group_id) REFERENCES public."group"(id),
     PRIMARY KEY (task_id, group_id)

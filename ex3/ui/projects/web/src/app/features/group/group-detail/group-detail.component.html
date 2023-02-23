@@ -18,7 +18,7 @@
     <div *ngFor="let task of (availableTasks$ | async); trackBy: trackByTask" class="task">
       <h2>{{ task.name }}</h2>
       <h4>{{ task.description }}</h4>
-      <button>Add</button>
+      <button (click)="onAddTaskClick(task.id)">Add</button>
   </div>
   <a routerLink="/group">Back</a>
 </div>

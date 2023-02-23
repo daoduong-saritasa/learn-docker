@@ -57,13 +57,5 @@
     </p>
     <a class="primary" routerLink="/auth/login">Log In</a>
   </ng-template>
-
-  <div>
-    <ul>
-      <li *ngFor="let group of groups$ | async">
-        {{ group.name }}
-      </li>
-    </ul>
-  </div>
   <a class="primary" routerLink="/group">Group</a>
 </div>

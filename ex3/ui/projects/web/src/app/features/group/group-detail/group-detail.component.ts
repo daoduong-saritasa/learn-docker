@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { gql, Apollo, TypedDocumentNode } from 'apollo-angular';
 
-const getGroup = (id: string | null): TypedDocumentNode => gql`
-query MyQuery {
-  groupById(id: ${id}) {
+const getGroup = gql`
+query MyQuery($id: Int!) {
+  groupById(id: $id) {
     taskGroupsByGroupId {
       nodes {
         taskByTaskId {
@@ -34,6 +34,40 @@ query MyQuery {
   }
 }
 
+`;
+
+const addTaskToGroup = gql`
+mutation MyMutation($groupId: Int!, $taskId: Int!) {
+  createTaskGroup(
+    input: {
+      taskGroup: {
+        groupId: $groupId
+        taskId: $taskId
+      }
+    }
+  ) {
+    groupByGroupId {
+      name
+      taskGroupsByGroupId {
+        nodes {
+          sentAt
+          taskByTaskId {
+            name
+            description
+          }
+        }
+      }
+    }
+    query {
+      allTasks {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+  }
+}
 `;
 
 /** Placeholder dashboard. */
@@ -68,7 +102,8 @@ export class GroupDetailComponent {
   ) {
     this.group$ = this.groupId$.pipe(
       switchMap(id => this.apollo.watchQuery({
-        query: getGroup(id),
+        query: getGroup,
+        variables: { id: parseInt(id ?? '', 10) },
       }).valueChanges.pipe(
         map((result: any) => result.data?.groupById),
       )),
@@ -94,5 +129,18 @@ export class GroupDetailComponent {
    */
   public trackByTask(index: number, task: any): string {
     return task.id;
+  }
+
+  public onAddTaskClick(taskId: string): void {
+    console.log(taskId);
+    this.apollo.mutate(
+      {
+        mutation: addTaskToGroup,
+        variables: {
+          groupId: parseInt(this.route.snapshot.paramMap.get('id') ?? '', 10),
+          taskId: parseInt(taskId, 10),
+        },
+      },
+    ).subscribe();
   }
 }
