@@ -3,7 +3,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { gql, Apollo } from 'apollo-angular';
+import { gql, Apollo, QueryRef } from 'apollo-angular';
 
 const getGroup = gql`
 query MyQuery($id: Int!) {
@@ -37,11 +37,7 @@ query MyQuery {
 const updateTaskGroupStatus = gql`
 mutation MyMutation($taskId: Int!, $groupId: Int!) {
   updateTaskStatusInGroup(input: {groupid: $groupId, taskid: $taskId}) {
-    taskGroup {
-      sentAt
-      groupId
-      taskId
-    }
+    clientMutationId
   }
 }
 
@@ -71,6 +67,11 @@ export class GroupDetailComponent {
   /** Tasks. */
   public readonly tasks$: Observable<any>;
 
+  /** Get all task query. */
+  public getAllTaskQuery: QueryRef<any> = this.apollo.watchQuery({
+    query: getAllTasks,
+  });
+
   public constructor(
     private readonly route: ActivatedRoute,
     private apollo: Apollo,
@@ -83,9 +84,7 @@ export class GroupDetailComponent {
         map((result: any) => result.data?.groupById),
       )),
     );
-    this.tasks$ = this.apollo.watchQuery({
-      query: getAllTasks,
-    }).valueChanges.pipe(
+    this.tasks$ = this.getAllTaskQuery.valueChanges.pipe(
       tap((result: any) => console.log(result)),
       map((result: any) => result.data?.allTasks?.nodes),
     );
@@ -114,7 +113,9 @@ export class GroupDetailComponent {
           groupId,
         },
       },
-    ).subscribe();
+    ).subscribe(() => {
+      this.getAllTaskQuery.refetch();
+    });
   }
 
   /**
