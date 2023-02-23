@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, tap, map } from 'rxjs';
@@ -28,9 +29,9 @@ export class GroupListComponent {
   /** Groups. */
   public readonly groups$: Observable<any>;
 
-  public constructor(
-    private apollo: Apollo,
-  ) {
+  private apollo = inject(Apollo);
+
+  public constructor() {
     this.groups$ = this.apollo.watchQuery({
       query: getGroups,
     }).valueChanges.pipe(

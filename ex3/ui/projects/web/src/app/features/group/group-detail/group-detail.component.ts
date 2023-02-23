@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { map, filter, switchMap, tap } from 'rxjs/operators';
+import { map, filter, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { gql, Apollo, QueryRef } from 'apollo-angular';
 
 const getGroup = gql`
-query MyQuery($id: Int!) {
+query getGroup($id: Int!) {
   groupById(id: $id) {
     name,
     id,
@@ -14,8 +14,8 @@ query MyQuery($id: Int!) {
 }
   `;
 
-const getAllTasks = gql`
-query MyQuery {
+const getAllTask = gql`
+query getAllTask {
   allTasks {
     nodes {
       name
@@ -35,7 +35,7 @@ query MyQuery {
 `;
 
 const updateTaskGroupStatus = gql`
-mutation MyMutation($taskId: Int!, $groupId: Int!) {
+mutation updateTaskGroupStatus($taskId: Int!, $groupId: Int!) {
   updateTaskStatusInGroup(input: {groupid: $groupId, taskid: $taskId}) {
     clientMutationId
   }
@@ -69,7 +69,7 @@ export class GroupDetailComponent {
 
   /** Get all task query. */
   public getAllTaskQuery: QueryRef<any> = this.apollo.watchQuery({
-    query: getAllTasks,
+    query: getAllTask,
   });
 
   public constructor(
@@ -85,7 +85,6 @@ export class GroupDetailComponent {
       )),
     );
     this.tasks$ = this.getAllTaskQuery.valueChanges.pipe(
-      tap((result: any) => console.log(result)),
       map((result: any) => result.data?.allTasks?.nodes),
     );
   }
