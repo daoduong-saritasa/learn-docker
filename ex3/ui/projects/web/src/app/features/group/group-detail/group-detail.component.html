@@ -1,6 +1,5 @@
 <div *ngIf="group$ |async as group" class="group">
   <h1>{{ group.name }}</h1>
-  <input type="text" class="search">
   <div *ngFor="let task of (tasks$ | async); trackBy: trackByTask" class="task">
     <h2>{{ task.taskByTaskId.name }}</h2>
     <h4>{{ task.taskByTaskId.description }}</h4>
