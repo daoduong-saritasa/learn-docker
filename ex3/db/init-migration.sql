@@ -198,19 +198,16 @@ INSERT INTO public."word_translation" (word, translation, from_language, to_lang
 CREATE TABLE public."task" (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    sent_at TIMESTAMP,
-    group_id INTEGER NOT NULL,
-    FOREIGN KEY (group_id) REFERENCES public."group"(id)
+    description VARCHAR(255) NOT NULL
 );
 
 -- Insert task
-INSERT INTO public."task" (name, description, sent_at, group_id) VALUES ('Task 1', 'Task 1 description', '2020-01-01 00:00:00', 1);
-INSERT INTO public."task" (name, description, sent_at, group_id) VALUES ('Task 2', 'Task 2 description', NULL, 1);
-INSERT INTO public."task" (name, description, sent_at, group_id) VALUES ('Task 3', 'Task 3 description', '2020-01-01 00:00:00', 2);
+INSERT INTO public."task" (name, description) VALUES ('Task 1', 'Task 1 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 2', 'Task 2 description');
+INSERT INTO public."task" (name, description) VALUES ('Task 3', 'Task 3 description');
 
 -- Create table task word translation
-CREATE TABLE task_word_translation (
+CREATE TABLE public."task_word_translation" (
     id SERIAL,
     task_id INTEGER NOT NULL,
     word_translation_id INTEGER NOT NULL,
@@ -227,3 +224,22 @@ INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (1, 4);
 INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (2, 5);
 INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (2, 6);
 INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (2, 7);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (3, 2);
+INSERT INTO task_word_translation (task_id, word_translation_id) VALUES (3, 6);
+
+
+
+-- Create table task group
+CREATE TABLE public."task_group" (
+    id SERIAL,
+    task_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    sent_at TIMESTAMP,
+    FOREIGN KEY (task_id) REFERENCES public."task"(id),
+    FOREIGN KEY (group_id) REFERENCES public."group"(id),
+    PRIMARY KEY (task_id, group_id)
+);
+
+INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (1, 1, '2020-01-01 00:00:00');
+INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (2, 1, NULL);
+INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (3, 2, '2020-01-01 00:00:00');
