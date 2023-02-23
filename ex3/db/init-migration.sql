@@ -265,8 +265,7 @@ BEGIN
         INSERT INTO public.task_group (task_id, group_id, sent_at)
         VALUES (taskId, groupId, NOW())
         RETURNING * INTO taskGroup;
-        
-    ELSE taskGroup.sent_at IS NULL THEN
+    ELSIF taskGroup.sent_at IS NULL THEN
         UPDATE public.task_group
         SET sent_at = NOW()
         WHERE task_id = taskId AND
