@@ -3,25 +3,15 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { map, filter, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { gql, Apollo, TypedDocumentNode } from 'apollo-angular';
+import { gql, Apollo } from 'apollo-angular';
 
 const getGroup = gql`
 query MyQuery($id: Int!) {
   groupById(id: $id) {
-    taskGroupsByGroupId {
-      nodes {
-        taskByTaskId {
-          id,
-          name
-          description
-        }
-        sentAt
-      }
-    }
-    name
+    name,
+    id,
   }
 }
-
   `;
 
 const getAllTasks = gql`
@@ -30,44 +20,32 @@ query MyQuery {
     nodes {
       name
       id
+      description
+      taskGroupsByTaskId {
+        nodes {
+          sentAt
+          groupId
+        }
+      }
     }
   }
 }
+
 
 `;
 
-const addTaskToGroup = gql`
-mutation MyMutation($groupId: Int!, $taskId: Int!) {
-  createTaskGroup(
-    input: {
-      taskGroup: {
-        groupId: $groupId
-        taskId: $taskId
-      }
-    }
-  ) {
-    groupByGroupId {
-      name
-      taskGroupsByGroupId {
-        nodes {
-          sentAt
-          taskByTaskId {
-            name
-            description
-          }
-        }
-      }
-    }
-    query {
-      allTasks {
-        nodes {
-          id
-          name
-        }
-      }
+const updateTaskGroupStatus = gql`
+mutation MyMutation($taskId: Int!, $groupId: Int!) {
+  updateTaskStatusInGroup(input: {groupid: $groupId, taskid: $taskId}) {
+    taskGroup {
+      sentAt
+      groupId
+      taskId
     }
   }
 }
+
+
 `;
 
 /** Placeholder dashboard. */
@@ -93,9 +71,6 @@ export class GroupDetailComponent {
   /** Tasks. */
   public readonly tasks$: Observable<any>;
 
-  /** Available task. */
-  public readonly availableTasks$: Observable<any>;
-
   public constructor(
     private readonly route: ActivatedRoute,
     private apollo: Apollo,
@@ -108,17 +83,11 @@ export class GroupDetailComponent {
         map((result: any) => result.data?.groupById),
       )),
     );
-    this.tasks$ = this.group$.pipe(
-      map((group: any) => group.taskGroupsByGroupId.nodes),
-    );
-
-    this.availableTasks$ = this.tasks$.pipe(
-      switchMap(tasks => this.apollo.watchQuery({
-        query: getAllTasks,
-      }).valueChanges.pipe(
-        map((result: any) => result.data?.allTasks.nodes),
-        map((allTasks: any) => allTasks.filter((task: any) => !tasks.find((t: any) => t.taskByTaskId.id === task.id))),
-      )),
+    this.tasks$ = this.apollo.watchQuery({
+      query: getAllTasks,
+    }).valueChanges.pipe(
+      tap((result: any) => console.log(result)),
+      map((result: any) => result.data?.allTasks?.nodes),
     );
   }
 
@@ -131,16 +100,29 @@ export class GroupDetailComponent {
     return task.id;
   }
 
-  public onAddTaskClick(taskId: string): void {
-    console.log(taskId);
+  /**
+   * Send task.
+   * @param taskId Task id.
+   * @param groupId Group id.
+   */
+  public onSendTaskClick(taskId: number, groupId: number): void {
     this.apollo.mutate(
       {
-        mutation: addTaskToGroup,
+        mutation: updateTaskGroupStatus,
         variables: {
-          groupId: parseInt(this.route.snapshot.paramMap.get('id') ?? '', 10),
-          taskId: parseInt(taskId, 10),
+          taskId,
+          groupId,
         },
       },
     ).subscribe();
+  }
+
+  /**
+   * Check task status.
+   * @param taskGroup Task group.
+   * @param groupId Group id.
+   */
+  public checkTaskStatus(taskGroup: any[], groupId: number): boolean {
+    return taskGroup.some((task: any) => task.groupId === groupId && task.sentAt !== null);
   }
 }
