@@ -243,3 +243,36 @@ CREATE TABLE public."task_group" (
 INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (1, 1, '2020-01-01 00:00:00');
 INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (2, 1, NULL);
 INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (3, 2, '2020-01-01 00:00:00');
+
+-- Create update task status in group table function
+CREATE FUNCTION public.update_task_status_in_group(
+    taskId INTEGER,
+    groupId INTEGER
+) RETURNS public.task_group
+language plpgsql
+AS $$
+DECLARE
+    taskGroup public.task_group;
+BEGIN
+    SELECT
+        tg.* INTO taskGroup
+    FROM
+        public.task_group AS tg
+    WHERE
+        tg.task_id = taskId AND
+        tg.group_id = groupId;
+    IF taskGroup IS NULL THEN
+        INSERT INTO public.task_group (task_id, group_id, sent_at)
+        VALUES (taskId, groupId, NOW())
+        RETURNING * INTO taskGroup;
+        
+    ELSE taskGroup.sent_at IS NULL THEN
+        UPDATE public.task_group
+        SET sent_at = NOW()
+        WHERE task_id = taskId AND
+              group_id = groupId;
+    END IF;
+
+    RETURN taskGroup;
+END; 
+$$;
