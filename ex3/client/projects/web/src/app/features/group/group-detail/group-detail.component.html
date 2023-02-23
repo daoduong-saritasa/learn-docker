@@ -1,12 +1,25 @@
 <div *ngIf="group$ |async as group" class="group">
   <h1>{{ group.name }}</h1>
+  <input type="text" class="search">
   <div *ngFor="let task of (tasks$ | async); trackBy: trackByTask" class="task">
-    <h2>{{ task.name }}</h2>
-    <h4>{{ task.description }}</h4>
+    <h2>{{ task.taskByTaskId.name }}</h2>
+    <h4>{{ task.taskByTaskId.description }}</h4>
     <div *ngIf="task.sentAt; else notSent">
       Sent
     </div>
-    <ng-template #notSent>Not sent</ng-template>
+    <ng-template #notSent>
+      Not sent
+      <button>
+        Send
+      </button>
+    </ng-template>
+  </div>
+  <div>
+    <h3>Available tasks</h3>
+    <div *ngFor="let task of (availableTasks$ | async); trackBy: trackByTask" class="task">
+      <h2>{{ task.name }}</h2>
+      <h4>{{ task.description }}</h4>
+      <button>Add</button>
   </div>
   <a routerLink="/group">Back</a>
 </div>

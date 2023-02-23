@@ -9,7 +9,7 @@ services:
       - 5432:5432
     volumes:
       - ./db/init-migration.sql:/docker-entrypoint-initdb.d/init-migration.sql
-      - vocabulary-db-data:/var/lib/postgresql/data
+      - ./db/vocabulary-db-data:/var/lib/postgresql/data
   api:
     image: graphile/postgraphile
     ports:

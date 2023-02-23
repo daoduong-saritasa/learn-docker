@@ -34,7 +34,6 @@ export class GroupListComponent {
     this.groups$ = this.apollo.watchQuery({
       query: getGroups,
     }).valueChanges.pipe(
-      tap((result: any) => console.log(result)),
       map((result: any) => result.data?.allGroups.nodes),
     );
   }
