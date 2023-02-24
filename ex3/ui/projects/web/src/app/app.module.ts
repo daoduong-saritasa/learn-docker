@@ -41,14 +41,7 @@ const httpInterceptorProviders = [
       useFactory(httpLink: HttpLink) {
         return {
           link: httpLink.create({
-
-            // <-- Ask for using app config
             uri: process.env.NG_APP_API_URL,
-
-            // If needed, you can set custom headers here
-            // headers: new HttpHeaders({
-            //   Authorization: `Bearer TOKEN`
-            // })
           }),
           cache: new InMemoryCache(),
         };

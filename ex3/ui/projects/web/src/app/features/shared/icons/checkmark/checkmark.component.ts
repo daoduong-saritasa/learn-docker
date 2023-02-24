@@ -5,7 +5,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   {
     selector: 'checkmark',
     templateUrl: './checkmark.component.html',
-    styleUrls: ['./checkmark.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
   },
 )
