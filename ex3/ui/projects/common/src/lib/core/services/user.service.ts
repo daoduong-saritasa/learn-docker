@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, concat, first, ignoreElements, map, merge, Observable, of, OperatorFunction, pipe, shareReplay, switchMap, throwError } from 'rxjs';
+import { catchError, concat, first, ignoreElements, map, merge, Observable, of, OperatorFunction, pipe, shareReplay, switchMap, tap, throwError } from 'rxjs';
 
 import { AppError } from '../models/app-error';
 import { Login } from '../models/login';

@@ -1,20 +1,39 @@
 /**
  * Basic representation of a user.
  */
+// export interface User {
+
+//   /**
+//    * ID.
+//    */
+//   readonly id: number;
+
+//   /**
+//    * First name.
+//    */
+//   readonly firstName: string;
+
+//   /**
+//    * Last name.
+//    */
+//   readonly lastName: string;
+// }
+
+/** Basic representation of a user. */
 export interface User {
 
-  /**
-   * ID.
-   */
-  readonly id: number;
+  /** Email. */
+  email: string;
 
-  /**
-   * First name.
-   */
-  readonly firstName: string;
+  /** First name. */
+  firstname: string;
 
-  /**
-   * Last name.
-   */
-  readonly lastName: string;
+  /** Id. */
+  id: number;
+
+  /** Is admin. */
+  isAdmin: boolean;
+
+  /** Last name. */
+  lastname: string;
 }
