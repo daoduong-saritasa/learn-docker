@@ -1,20 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, tap, map } from 'rxjs';
-
-const getGroups = gql`
-query MyQuery {
-  allGroups {
-    nodes {
-      id,
-      name
-    }
-  }
-}
-
-`;
+import { Group } from '@saanbo/common/core/models/graphql/group';
+import { GroupService } from '@saanbo/common/core/services/group.service';
+import { Observable } from 'rxjs';
 
 /** Placeholder dashboard. */
 @UntilDestroy()
@@ -27,16 +15,12 @@ query MyQuery {
 })
 export class GroupListComponent {
   /** Groups. */
-  public readonly groups$: Observable<any>;
+  public readonly groups$: Observable<Group[]>;
 
-  private apollo = inject(Apollo);
+  private groupService = inject(GroupService);
 
   public constructor() {
-    this.groups$ = this.apollo.watchQuery({
-      query: getGroups,
-    }).valueChanges.pipe(
-      map((result: any) => result.data?.allGroups.nodes),
-    );
+    this.groups$ = this.groupService.getAllGroups();
   }
 
   /**

@@ -3,46 +3,10 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { map, filter, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { gql, Apollo, QueryRef } from 'apollo-angular';
-
-const getGroup = gql`
-query getGroup($id: Int!) {
-  groupById(id: $id) {
-    name,
-    id,
-  }
-}
-  `;
-
-const getAllTask = gql`
-query getAllTask {
-  allTasks {
-    nodes {
-      name
-      id
-      description
-      taskGroupsByTaskId {
-        nodes {
-          sentAt
-          groupId
-        }
-      }
-    }
-  }
-}
-
-
-`;
-
-const updateTaskGroupStatus = gql`
-mutation updateTaskGroupStatus($taskId: Int!, $groupId: Int!) {
-  updateTaskStatusInGroup(input: {groupid: $groupId, taskid: $taskId}) {
-    clientMutationId
-  }
-}
-
-
-`;
+import { Group } from '@saanbo/common/core/models/graphql/group';
+import { GroupService } from '@saanbo/common/core/services/group.service';
+import { assertNonNullWithReturn } from '@saanbo/common/core/utils/assert-non-null';
+import { TaskGroup, Task } from '@saanbo/common/core/models/graphql/task';
 
 /** Placeholder dashboard. */
 @UntilDestroy()
@@ -54,39 +18,30 @@ mutation updateTaskGroupStatus($taskId: Int!, $groupId: Int!) {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroupDetailComponent {
-
   /** Group. */
-  public readonly group$: Observable<any>;
+  public readonly group$: Observable<Group>;
 
   /** Group id. */
-  public readonly groupId$: Observable<string | null> = this.route.paramMap.pipe(
-    map(params => params.get('id')),
-    filter(id => !!id),
-  );
+  public readonly groupId$: Observable<string | null> =
+    this.route.paramMap.pipe(
+      map(params => params.get('id')),
+      filter(id => !!id),
+    );
 
   /** Tasks. */
-  public readonly tasks$: Observable<any>;
-
-  /** Get all task query. */
-  public getAllTaskQuery: QueryRef<any> = this.apollo.watchQuery({
-    query: getAllTask,
-  });
+  public readonly tasks$: Observable<Task[]>;
 
   public constructor(
     private readonly route: ActivatedRoute,
-    private apollo: Apollo,
+    private readonly groupService: GroupService,
   ) {
     this.group$ = this.groupId$.pipe(
-      switchMap(id => this.apollo.watchQuery({
-        query: getGroup,
-        variables: { id: parseInt(id ?? '', 10) },
-      }).valueChanges.pipe(
-        map((result: any) => result.data?.groupById),
-      )),
+      switchMap(id =>
+        this.groupService.getGroupDetail(
+          parseInt(assertNonNullWithReturn(id), 10),
+        )),
     );
-    this.tasks$ = this.getAllTaskQuery.valueChanges.pipe(
-      map((result: any) => result.data?.allTasks?.nodes),
-    );
+    this.tasks$ = this.groupService.getAllTasks();
   }
 
   /**
@@ -94,7 +49,7 @@ export class GroupDetailComponent {
    * @param index Index.
    * @param task Task.
    */
-  public trackByTask(index: number, task: any): string {
+  public trackByTask(index: number, task: Task): number {
     return task.id;
   }
 
@@ -104,25 +59,18 @@ export class GroupDetailComponent {
    * @param groupId Group id.
    */
   public onSendTaskClick(taskId: number, groupId: number): void {
-    this.apollo.mutate(
-      {
-        mutation: updateTaskGroupStatus,
-        variables: {
-          taskId,
-          groupId,
-        },
-      },
-    ).subscribe(() => {
-      this.getAllTaskQuery.refetch();
-    });
+    this.groupService.updateTaskGroupStatus(taskId, groupId);
   }
 
   /**
    * Check task status.
-   * @param taskGroup Task group.
+   * @param taskGroups Task groups.
    * @param groupId Group id.
    */
-  public checkTaskStatus(taskGroup: any[], groupId: number): boolean {
-    return taskGroup.some((task: any) => task.groupId === groupId && task.sentAt !== null);
+  public checkTaskStatus(taskGroups: TaskGroup[], groupId: number): boolean {
+    // console.log(taskGroups, groupId);
+    return taskGroups.some(
+      taskGroup => taskGroup.groupId === groupId && taskGroup.sentAt !== null,
+    );
   }
 }
