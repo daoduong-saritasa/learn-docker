@@ -18,15 +18,15 @@ import { TaskGroup, Task } from '@saanbo/common/core/models/graphql/task';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroupDetailComponent {
+
   /** Group. */
   public readonly group$: Observable<Group>;
 
   /** Group id. */
-  public readonly groupId$: Observable<string | null> =
-    this.route.paramMap.pipe(
-      map(params => params.get('id')),
-      filter(id => !!id),
-    );
+  public readonly groupId$: Observable<string | null> = this.route.paramMap.pipe(
+    map(params => params.get('id')),
+    filter(id => !!id),
+  );
 
   /** Tasks. */
   public readonly tasks$: Observable<Task[]>;
@@ -37,9 +37,8 @@ export class GroupDetailComponent {
   ) {
     this.group$ = this.groupId$.pipe(
       switchMap(id =>
-        this.groupService.getGroupDetail(
-          parseInt(assertNonNullWithReturn(id), 10),
-        )),
+        this.groupService.getGroupDetail(parseInt(assertNonNullWithReturn(id), 10))),
+
     );
     this.tasks$ = this.groupService.getAllTasks();
   }
@@ -68,9 +67,6 @@ export class GroupDetailComponent {
    * @param groupId Group id.
    */
   public checkTaskStatus(taskGroups: TaskGroup[], groupId: number): boolean {
-    // console.log(taskGroups, groupId);
-    return taskGroups.some(
-      taskGroup => taskGroup.groupId === groupId && taskGroup.sentAt !== null,
-    );
+    return taskGroups.some(taskGroup => taskGroup.groupId === groupId && taskGroup.sentAt !== null);
   }
 }
