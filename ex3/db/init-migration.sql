@@ -270,6 +270,8 @@ INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (4, 2, '2020
 INSERT INTO public."task_group" (task_id, group_id, sent_at) VALUES (5, 3, '2020-01-01 00:00:00');
 
 -- Create update task status in group table function
+GRANT INSERT, DELETE, SELECT, TRIGGER, TRUNCATE, UPDATE, REFERENCES ON TABLE public.task_group TO vocabulary_admin;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE public.task_group_id_seq TO vocabulary_admin;
 CREATE FUNCTION public.update_task_status_in_group(
     taskId INTEGER,
     groupId INTEGER
