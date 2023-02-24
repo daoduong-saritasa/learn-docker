@@ -38,7 +38,7 @@ export class UserService {
    * @param loginData Login data.
    */
   public login(loginData: Login): Observable<void> {
-    return this.authService.login(loginData).pipe(
+    return this.authService.loginWithGraphQL(loginData).pipe(
       this.saveSecretAndWaitForAuthorized(),
     );
   }
