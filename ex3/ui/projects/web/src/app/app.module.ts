@@ -9,6 +9,8 @@ import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache } from '@apollo/client/core';
 
+import { environment } from '../environments/environment';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WebAppConfig } from './features/shared/web-app.config';
@@ -41,7 +43,7 @@ const httpInterceptorProviders = [
       useFactory(httpLink: HttpLink) {
         return {
           link: httpLink.create({
-            uri: process.env.NG_APP_API_URL,
+            uri: environment.apiUrl,
           }),
           cache: new InMemoryCache(),
         };
