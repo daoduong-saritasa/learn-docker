@@ -44,7 +44,6 @@ export class AuthApiService {
    * @param loginData Login data.
    */
   public login(loginData: Login): Observable<UserSecret> {
-    console.log('login', loginData);
     const loginDataDto = this.loginDataMapper.toDto(loginData);
     return this.apollo.mutate<AuthenticateDto>({
       mutation: LOGIN,
