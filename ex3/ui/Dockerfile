@@ -9,4 +9,3 @@ RUN npm run build
 # Serve app
 FROM jawg/nginx-spa
 COPY --from=build /app/dist/web /usr/share/nginx/html
-COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
