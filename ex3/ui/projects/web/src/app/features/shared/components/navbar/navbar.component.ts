@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { untilDestroyed } from '@ngneat/until-destroy';
-import { User } from '@saanbo/common/core/models/user';
+import { User } from '@saanbo/common/core/models/graphql/user';
 import { UserService } from '@saanbo/common/core/services/user.service';
 import { toggleExecutionState } from '@saanbo/common/core/utils/rxjs/toggle-execution-state';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';

@@ -4,8 +4,6 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { GraphQLLogin } from '../models/graphql/user-secret';
-
 import { Login } from '../models/login';
 import { PasswordChange } from '../models/password-change';
 import { PasswordReset } from '../models/password-reset';
@@ -13,6 +11,7 @@ import { UserSecret } from '../models/user-secret';
 import { assertNonNullWithReturn } from '../utils/assert-non-null';
 
 import { AppUrlsConfig } from './app-urls.config';
+import { AuthenticateDto } from './graphql/dtos/user-secret';
 import { LOGIN } from './graphql/mutations/auth.mutation';
 import { AppErrorMapper } from './mappers/app-error.mapper';
 import { SuccessResponseDto } from './mappers/dto/success-response.dto';
@@ -44,26 +43,10 @@ export class AuthApiService {
    * Login a user with email and password.
    * @param loginData Login data.
    */
-  // public login(loginData: Login): Observable<UserSecret> {
-  //   return this.httpClient.post<UserSecret>(
-  //     this.apiUrlsConfig.auth.login,
-  //     this.loginDataMapper.toDto(loginData),
-  //   )
-  //     .pipe(
-  //       map(dto => this.userSecretMapper.fromDto(dto)),
-  //       this.appErrorMapper.catchHttpErrorToAppErrorWithValidationSupport(
-  //         this.loginDataMapper,
-  //       ),
-  //     );
-  // }
-
-  /**
-   * Login a user with email and password.
-   * @param loginData Login data.
-   */
-  public loginWithGraphQL(loginData: Login): Observable<UserSecret> {
+  public login(loginData: Login): Observable<UserSecret> {
+    console.log('login', loginData);
     const loginDataDto = this.loginDataMapper.toDto(loginData);
-    return this.apollo.mutate<GraphQLLogin>({
+    return this.apollo.mutate<AuthenticateDto>({
       mutation: LOGIN,
       variables: {
         email: loginDataDto.email,

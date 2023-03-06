@@ -1,8 +1,30 @@
-import { User } from '../user';
+/**
+ * Basic representation of a user.
+ */
+export interface User {
 
-/** User profile response. */
-export interface GraphQLUserProfile {
+  /**
+   * ID.
+   */
+  readonly id: number;
 
-  /** User by id response. */
-  userProfile: User;
+  /**
+   * First name.
+   */
+  readonly firstName: string;
+
+  /**
+   * Last name.
+   */
+  readonly lastName: string;
+
+  /**
+   * Email.
+   */
+  readonly email: string;
+
+  /**
+   * Is admin.
+   */
+  readonly isAdmin: boolean;
 }

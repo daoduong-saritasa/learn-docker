@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <h1>Welcome <span *ngIf="(user$|async) as user">{{ user.firstname }} {{ user.lastname }}</span></h1>
+  <h1>Welcome <span *ngIf="(user$|async) as user">{{ user.firstName }} {{ user.lastName }}</span></h1>
   <button class="logout-button"
   [saanbocLoading]="isLoading$ | async"
   (click)="onLogoutClick()"

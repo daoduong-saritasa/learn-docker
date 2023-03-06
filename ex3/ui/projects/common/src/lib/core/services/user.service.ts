@@ -4,8 +4,8 @@ import { catchError, concat, first, ignoreElements, map, merge, Observable, of, 
 import { AppError } from '../models/app-error';
 import { Login } from '../models/login';
 import { PasswordReset } from '../models/password-reset';
-import { User } from '../models/user';
-import { UserSecret } from '../models/user-secret';
+import { User } from '../models/graphql/user';
+import { UserSecret } from '../models/graphql/user-secret';
 
 import { AuthApiService } from './auth-api.service';
 import { UserApiService } from './user-api.service';
@@ -38,7 +38,7 @@ export class UserService {
    * @param loginData Login data.
    */
   public login(loginData: Login): Observable<void> {
-    return this.authService.loginWithGraphQL(loginData).pipe(
+    return this.authService.login(loginData).pipe(
       this.saveSecretAndWaitForAuthorized(),
     );
   }

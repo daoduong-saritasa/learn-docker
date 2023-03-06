@@ -1,13 +1,6 @@
 /** User secret. */
-export interface GraphQLUserSecret {
+export interface UserSecret {
 
-  /** Jwt token. */
-  jwtToken: string;
-}
-
-/** Authenticate function. */
-export interface GraphQLLogin {
-
-  /** Authenticate response. */
-  authenticate: GraphQLUserSecret;
+  /** Access token. */
+  readonly token: string;
 }
