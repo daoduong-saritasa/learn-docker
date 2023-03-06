@@ -5,7 +5,7 @@ import { Group } from '@saanbo/common/core/models/graphql/group';
 import { IMapperFromDto } from '../../mappers/mappers';
 import { GroupDto } from '../dtos/group';
 
-/** User mapper. */
+/** Group mapper. */
 @Injectable({
   providedIn: 'root',
 })
