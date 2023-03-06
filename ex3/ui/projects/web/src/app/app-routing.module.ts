@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { authorizedGuard } from '@saanbo/common/core/guards/authorized.guard';
-import { unauthorizedGuard } from '@saanbo/common/core/guards/unauthorized.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +11,6 @@ const routes: Routes = [
     path: 'auth',
     loadChildren: () =>
       import('./features/auth/auth.module').then(m => m.AuthModule),
-    canActivate: [authorizedGuard],
   },
   {
     path: 'dashboard',
@@ -25,7 +22,6 @@ const routes: Routes = [
   {
     path: 'group',
     loadChildren: () => import('./features/group/group.module').then(m => m.GroupModule),
-    canActivate: [unauthorizedGuard],
   },
 ];
 
