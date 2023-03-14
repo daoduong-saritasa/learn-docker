@@ -1,5 +1,4 @@
 import {
-  ArcRotateCamera,
   CannonJSPlugin,
   Color3,
   Engine,
@@ -25,6 +24,7 @@ export class MainScene {
   private destination: Vector3 | null = Vector3.Zero();
   private carSpeed = 0;
   private carAcceleration = 0;
+  private spheres: Mesh[] = [];
   public constructor(private readonly canvas: HTMLCanvasElement) {
     MainCamera.create(this.scene);
     MainLight.create(this.scene);
@@ -34,12 +34,11 @@ export class MainScene {
     this.scene.enablePhysics(new Vector3(0, -9.81, 0), physicsPlugin);
     this.createGround();
     const carBody = this.createCar();
-    const sphere = this.createSphere();
+    this.createSpheres();
     this.canvas.addEventListener('click', (event) => {
       const pickResult = this.scene.pick(
         event.offsetX,
         event.offsetY,
-        (mesh) => mesh.name === 'ground'
       );
       this.destination = assertNonNullWithReturn(pickResult.pickedPoint);
       const direction = this.destination.subtract(carBody.position);
@@ -48,16 +47,19 @@ export class MainScene {
       this.carAcceleration = distance / 100;
     });
 
-    carBody.physicsImpostor?.registerOnPhysicsCollide(
-      sphere.physicsImpostor!,
-      (main, collided) => {
-        if (main.object === carBody) {
-          this.carSpeed = 0;
-          this.carAcceleration = 0;
-          this.destination = null;
+
+    this.spheres.forEach((sphere) => {
+      sphere.physicsImpostor?.registerOnPhysicsCollide(
+        carBody.physicsImpostor!,
+        (main, collided) => {
+          if (main.object === sphere) {
+            this.carSpeed = 0;
+            this.carAcceleration = 0;
+            this.destination = null;
+          }
         }
-      }
-    )
+      );
+    });
 
     this.engine.runRenderLoop(() => {
       if (this.destination) {
@@ -68,13 +70,11 @@ export class MainScene {
         this.carAcceleration = Math.min(this.carAcceleration, maxSpeed / distance);
         this.carSpeed += this.carAcceleration;
         this.carSpeed = Math.min(this.carSpeed, maxSpeed);
-        console.log(distance, this.carSpeed)
         if (distance <= this.carSpeed) {
           this.destination = null;
           this.carSpeed = 0;
           this.carAcceleration = 0;
         } else {
-          // Update the car's position as usual
           carBody.moveWithCollisions(direction.normalize().scale(this.carSpeed));
         }
       }
@@ -112,8 +112,6 @@ export class MainScene {
   }
 
   private createCar(): Mesh {
-
-
     const carBody = MeshBuilder.CreateBox(
       'carBody',
       { height: 9, width: 5, depth: 10 },
@@ -123,28 +121,40 @@ export class MainScene {
     carBody.physicsImpostor = new PhysicsImpostor(
       carBody,
       PhysicsImpostor.BoxImpostor,
-      { mass: 2, friction: 0.1, restitution: 0.5 },
+      { mass: 0, friction: 0.1, restitution: 0},
       this.scene
     );
     return carBody;
   }
 
-  private createSphere(): Mesh {
+  private createSphere(position: Vector3): Mesh {
     const sphere = MeshBuilder.CreateSphere(
       'sphere',
-      { diameter: 5 },
+      { diameter: 10 },
       this.scene
     );
-    sphere.position = new Vector3(10, 10, 0);
+    sphere.position = position;
     const material = new StandardMaterial('sphereMaterial');
     material.diffuseColor = Color3.Random();
     sphere.material = material;
     sphere.physicsImpostor = new PhysicsImpostor(
       sphere,
       PhysicsImpostor.SphereImpostor,
-      { mass: 1, friction: 0.1, restitution: 0.3 },
+      { mass: 1, friction: 0.1, restitution: 0 },
       this.scene
     );
     return sphere;
+  }
+
+  private createSpheres(): void {
+    for (let i = 0; i < 10; i++) {
+      const randomPosition = new Vector3(
+        -250 + Math.random() * 500,
+        5,
+        -250 + Math.random() * 500
+      );
+      const sphere = this.createSphere(randomPosition);
+      this.spheres.push(sphere);
+    }
   }
 }
