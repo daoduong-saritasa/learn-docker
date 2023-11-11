@@ -1,4 +1,5 @@
 import {
+  AbstractMesh,
   CannonJSPlugin,
   Color3,
   Engine,
@@ -6,9 +7,11 @@ import {
   MeshBuilder,
   PhysicsImpostor,
   Scene,
+  SceneLoader,
   StandardMaterial,
   Vector3,
 } from '@babylonjs/core';
+import "@babylonjs/loaders/glTF";
 import * as CANNON from 'cannon';
 
 import { MainLight } from './main-light';
@@ -25,44 +28,23 @@ export class MainScene {
   private carSpeed = 0;
   private carAcceleration = 0;
   private spheres: Mesh[] = [];
+  private car: Promise<AbstractMesh>;
   public constructor(private readonly canvas: HTMLCanvasElement) {
     MainCamera.create(this.scene);
     MainLight.create(this.scene);
+
 
     // enable physics
     const physicsPlugin = new CannonJSPlugin(true, 100, CANNON);
     this.scene.enablePhysics(new Vector3(0, -9.81, 0), physicsPlugin);
     this.createGround();
-    const carBody = this.createCar();
-    this.createSpheres();
-    this.canvas.addEventListener('click', (event) => {
-      const pickResult = this.scene.pick(
-        event.offsetX,
-        event.offsetY,
-      );
-      this.destination = assertNonNullWithReturn(pickResult.pickedPoint);
-      const direction = this.destination.subtract(carBody.position);
-      direction.y = 0;
-      const distance = Vector3.Distance(this.destination, carBody.position);
-      this.carAcceleration = distance / 100;
-    });
+    this.car = this.createCar();
+    this.spheres = this.createSpheres();
 
-
-    this.spheres.forEach((sphere) => {
-      sphere.physicsImpostor?.registerOnPhysicsCollide(
-        carBody.physicsImpostor!,
-        (main, collided) => {
-          if (main.object === sphere) {
-            this.carSpeed = 0;
-            this.carAcceleration = 0;
-            this.destination = null;
-          }
-        }
-      );
-    });
-
-    this.engine.runRenderLoop(() => {
+    this.initCarPhysics(canvas);
+    this.engine.runRenderLoop(async () => {
       if (this.destination) {
+        const carBody = await this.car;
         const direction = this.destination.subtract(carBody.position);
         direction.y = 0;
         const distance = Vector3.Distance(this.destination, carBody.position);
@@ -88,6 +70,34 @@ export class MainScene {
     this.engine.dispose();
   }
 
+  private async initCarPhysics(canvas: HTMLCanvasElement): Promise<void> {
+    const car = await this.car;
+    this.canvas.addEventListener('click', (event) => {
+      const pickResult = this.scene.pick(
+        event.offsetX,
+        event.offsetY,
+      );
+      this.destination = assertNonNullWithReturn(pickResult.pickedPoint);
+      const direction = this.destination.subtract(car.position);
+      direction.y = 0;
+      const distance = Vector3.Distance(this.destination, car.position);
+      this.carAcceleration = distance / 100;
+    });
+
+    this.spheres.forEach((sphere) => {
+      sphere.physicsImpostor?.registerOnPhysicsCollide(
+        car.physicsImpostor!,
+        (main, collided) => {
+          if (main.object === sphere) {
+            this.carSpeed = 0;
+            this.carAcceleration = 0;
+            this.destination = null;
+          }
+        }
+      );
+    });
+  }
+
   private createGround(): void {
     const ground = MeshBuilder.CreateBox(
       'ground',
@@ -111,13 +121,11 @@ export class MainScene {
     );
   }
 
-  private createCar(): Mesh {
-    const carBody = MeshBuilder.CreateBox(
-      'carBody',
-      { height: 9, width: 5, depth: 10 },
-      this.scene
-    );
+  private async createCar(): Promise<AbstractMesh> {
+    const { meshes } = await SceneLoader.ImportMeshAsync('', '/assets/','car.glb', this.scene);
+    const carBody = meshes[0];
     carBody.position = new Vector3(0, 0, 0);
+    carBody.scaling = new Vector3(10, 10, 10);
     carBody.physicsImpostor = new PhysicsImpostor(
       carBody,
       PhysicsImpostor.BoxImpostor,
@@ -146,7 +154,8 @@ export class MainScene {
     return sphere;
   }
 
-  private createSpheres(): void {
+  private createSpheres(): Mesh[] {
+    const result = [];
     for (let i = 0; i < 10; i++) {
       const randomPosition = new Vector3(
         -250 + Math.random() * 500,
@@ -154,7 +163,8 @@ export class MainScene {
         -250 + Math.random() * 500
       );
       const sphere = this.createSphere(randomPosition);
-      this.spheres.push(sphere);
+      result.push(sphere);
     }
+    return result;
   }
 }
